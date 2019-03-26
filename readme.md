@@ -1,10 +1,29 @@
 ## tinyhttpd++
 ### 介绍
-tinyhttpd++是重写tinyhttpd的c++版本，代码总量500+行，实现最基本的httpd的功能；  
+tinyhttpd++是重写tinyhttpd的c++版本，代码总量500+行，实现最基本的httpd的功能：  
 （1）多线程  
 （2）文件读写  
 （3）简单的CGI协议  
 （4）4xx，5xx状态码  
+
+### 构建
+main的代码：
+```
+int main(int argc, char **argv)
+{
+    Httpd httpd;
+    LOG("startup port:%d", 8080);
+    httpd.startup(8080);
+    return 0;
+}
+```
+
+执行并运行：
+```
+make
+
+./tinyhttpd
+```
 
 ### 工作流程
 （1）服务器启动，在指定端口或随机选取端口绑定 httpd 服务；
@@ -73,7 +92,7 @@ tinyhttpd++是重写tinyhttpd的c++版本，代码总量500+行，实现最基�
 （9）在父进程中，关闭 cgi_input 的读取端 和 cgi_output 的写入端，如果 POST 的话，把 POST 数据写入 cgi_input，已被重定向到 STDIN，读取 cgi_output 的管道输出到客户端，该管道输入是 STDOUT，接着关闭所有管道，等待子进程结束。 
 
 ### 最后
-（1）为了后续改造方便，可以尝试重写HttpdSocket的虚函数：
+（1）为了后续改造方便，可以尝试重写HttpdSocket的虚函数：  
 ```
     virtual void error501();
 
@@ -87,7 +106,7 @@ tinyhttpd++是重写tinyhttpd的c++版本，代码总量500+行，实现最基�
 
     virtual void executeCGI(const char *path);
 ```
-（2）以下内容来自tinyhttpd源作者:
+（2）以下内容来自tinyhttpd源作者:   
 This software is copyright 1999 by J. David Blackstone. Permission is granted to redistribute and modify this software under the terms of the GNU General Public License, available at http://www.gnu.org/ .
 
 If you use this software or examine the code, I would appreciate knowing and would be overjoyed to hear about it at jdavidb@sourceforge.net .
