@@ -45,8 +45,9 @@ static void* accept_request(void *arg)
             socket->executeCGI(path);
         }
     }
-
     socket->close();
+    // 释放对象
+    socket->getHttpd()->freeObject(socket);
     return NULL;
 }
 
@@ -108,6 +109,7 @@ void Httpd::loop()
         HttpdSocketPtr s = newObject();
         s->setClientFd(fd);
         s->setClientName(client_name);
+        s->setHttpd(this);
 
         if (pthread_create(&pthread , NULL, accept_request, s) != 0)
         {

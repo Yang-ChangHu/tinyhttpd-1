@@ -21,8 +21,9 @@ int main(int argc, char **argv)
 执行并运行：
 ```
 make
-
 ./tinyhttpd
+
+注意：可以修改Makefile，如果不需要DEBUG（默认打开），则将修改CFLAG：-W -Wall -g -Wno-reorder -Wno-unused-parameter -Wno-format -DDEBUG
 ```
 
 ### 工作流程

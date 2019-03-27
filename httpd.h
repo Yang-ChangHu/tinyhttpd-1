@@ -27,21 +27,32 @@ using namespace std;
         perror("[ERROR]"#msg);           \
     } while(0)
 
+#ifdef DEBUG
 #define LOG(fmt, ...)   fprintf(stdout, "[%s][%u]" fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+#define LOG(fmt, ...)
+#endif
 
 #define MAX_BUF_SIZE 1024
+
+class Httpd;
 
 class HttpdSocket
 {
 public:
     HttpdSocket() : m_client_fd_(0), m_buffer_xi_(0), 
-        m_query_(NULL), m_buffer_len_(0)
+        m_query_(NULL), m_buffer_len_(0), m_httpd_(NULL)
     { }
 
     HttpdSocket(int fd, struct sockaddr_in &s) :
         m_client_fd_(fd), m_client_name_(s), m_buffer_xi_(0), 
-        m_query_(NULL), m_buffer_len_(0)
+        m_query_(NULL), m_buffer_len_(0), m_httpd_(NULL)
     { }
+
+    virtual ~HttpdSocket()
+    {
+        reset();
+    }
 
     inline void setClientFd(int fd)
     {
@@ -53,12 +64,31 @@ public:
         m_client_name_ = client;
     }
 
+    inline void setHttpd(Httpd *h)
+    {
+        m_httpd_ = h;
+    }
+
+    inline Httpd* getHttpd()
+    {
+        return m_httpd_;
+    }
+
     inline void close()
     {
         if (m_client_fd_ > 0) 
         {
             ::close(m_client_fd_);
         }
+    }
+
+    inline void reset()
+    {
+        m_client_fd_ = 0;
+        m_buffer_xi_ = 0; 
+        m_query_ = NULL;
+        m_buffer_len_ = 0;
+        m_httpd_ = NULL;
     }
 
     // 解析方法
@@ -213,6 +243,7 @@ private:
     char m_buffer_[MAX_BUF_SIZE], m_method_[255], m_url_[255];
 
     map<string, string> m_header_;
+    Httpd *m_httpd_;
 };
 
 typedef HttpdSocket* HttpdSocketPtr;
@@ -222,6 +253,17 @@ class Httpd
 public:
     Httpd() : m_socket_fd_(0)
     { }
+
+    ~Httpd()
+    {
+        // 清空m_queue_
+        while (m_queue_.empty())
+        {
+            HttpdSocketPtr o = m_queue_.front();
+            m_queue_.pop();
+            delete o;
+        }
+    }
 
     void startup(u_short port);
 
@@ -234,16 +276,21 @@ public:
             m_queue_.push(new HttpdSocket());
         }
 
-        HttpdSocket *o = m_queue_.front();
+        HttpdSocketPtr o = m_queue_.front();
         m_queue_.pop();
+
+        LOG("object:%p", o);
 
         return o;
     }
 
     void freeObject(HttpdSocketPtr o)
     {
+        LOG("object:%p", o);
+
         if (o != NULL)
         {
+            o->reset(); // 重置
             m_queue_.push(o);
         }
     }
