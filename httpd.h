@@ -93,10 +93,13 @@ public:
 
     // 解析方法
     inline void parseMethod();
+
     // 解析query
     inline void parseUrl();
+
     // 解析header
     inline void parseHeader();
+
     // 获取content-length
     inline int getContentLength()
     {
@@ -147,11 +150,11 @@ public:
 
     virtual void error501();
 
+    virtual void error500();
+
     virtual void error404();
 
     virtual void error400();
-
-    virtual void error500();
 
     virtual void serveFile(const char *path);
 
@@ -174,18 +177,21 @@ public:
     {
         int xi = 0;
         while (str[xi] != '\0' && isspace(str[xi])) xi++;
+
         // 先处理key
         while (str[xi] != '\0' && str[xi] != ':' && str[xi] != '\n')
         {
             key = key + (char)tolower(str[xi]);
             xi++;
         }
+
         if (str[xi] == ':' || str[xi] == '\n')
         {
             xi++;
         }
 
         while (str[xi] != '\0' && isspace(str[xi])) xi++;
+
         while (str[xi] != '\0' && str[xi] != '\n')
         {
             value = value + (char)tolower(str[xi]);
@@ -195,7 +201,6 @@ public:
         return xi + 1;
     }
 
-private:
     // 每次获取一行的数据
     int getLine()
     {

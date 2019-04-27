@@ -247,6 +247,7 @@ void HttpdSocket::parseMethod()
 
         LOG("body:%s", m_buffer_);
     }
+    
     // 跳过空格
     while (isspace(m_buffer_[m_buffer_xi_]) && (m_buffer_xi_ < sizeof(m_buffer_))) m_buffer_xi_++;
 
@@ -259,6 +260,7 @@ void HttpdSocket::parseMethod()
         xi++; 
         m_buffer_xi_++;
     }
+
     m_method_[m_buffer_xi_] = '\0';
 
     LOG("method:%s, m_buffer_xi_:%d, m_buffer_len_:%d", 
@@ -275,6 +277,7 @@ void HttpdSocket::parseUrl()
 
         LOG("body:%s", m_buffer_);
     }
+
     while (isspace(m_buffer_[m_buffer_xi_]) && (m_buffer_xi_ < sizeof(m_buffer_))) m_buffer_xi_++;
 
     size_t xi = 0;
@@ -286,7 +289,9 @@ void HttpdSocket::parseUrl()
         xi++; 
         m_buffer_xi_++;
     }
+
     m_url_[xi] = '\0';
+
     if (strcasecmp(m_method_, "GET") == 0)
     {
         m_query_ = m_url_;
@@ -316,6 +321,7 @@ void HttpdSocket::parseHeader()
 
             LOG("body:%s, m_buffer_len_:%d", m_buffer_, m_buffer_len_);
         }
+
         while (isspace(m_buffer_[m_buffer_xi_]) && (m_buffer_xi_ < sizeof(m_buffer_))) m_buffer_xi_++;
 
         if (m_buffer_len_ <= 0)
