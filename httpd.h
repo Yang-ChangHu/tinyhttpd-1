@@ -18,13 +18,15 @@
 using namespace std;
 
 #define SERVER_STRING "Server: httpd++/1.0.0\r\n"
-#define ERROR_DIE(msg)  do {            \
-        perror("[ERROR_DIE]"#msg);       \
+#define ERROR_DIE(msg)  do              \
+    {                                   \
+        perror("[ERROR_DIE]"#msg);      \
         exit(1);                        \
     } while(0)
 
-#define ERROR(msg)      do {            \
-        perror("[ERROR]"#msg);           \
+#define ERROR(msg)      do              \
+    {                                   \
+        perror("[ERROR]"#msg);          \
     } while(0)
 
 #ifdef DEBUG

@@ -1,7 +1,7 @@
 SHELL = /bin/sh
 CC = g++
 
-CFLAG = -W -Wall -O3 -Wno-reorder -Wno-unused-parameter -Wno-format -DDEBUG
+CFLAG = -W -Wall -O3 -Wno-reorder -Wno-unused-parameter -Wno-format
  
 INCLUDE_PATH = -I.
 HTTPD_TARGET = tinyhttpd
