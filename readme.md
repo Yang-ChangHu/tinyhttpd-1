@@ -72,7 +72,7 @@ make
         socket->executeCGI(path);
     }
 ```
-（6）读取整个HTTP请求并丢弃，如果是POST则找出Content-Length。把HTTP 200状态码写到套接字。 
+（6）读取整个HTTP请求并丢弃，如果是POST则找出Content-Length。把HTTP 200状态码写到套接字。  
 （7）建立两个管道，cgi_input和cgi_output, 并fork一个进程。  
 （8）在子进程中，把STDOUT重定向到cgi_output的写入端，把STDIN重定向到cgi_input的读取端，关闭cgi_input的写入端和cgi_output的读取端，设置request_method的环境变量，GET设置查询的环境变量，POST设置content_length的环境变量，这些环境变量都是为了给cgi脚本调用，接着用 execl运行cgi程序。  
 ```
